@@ -18,6 +18,7 @@ import java.util.Set;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -273,20 +274,19 @@ public class XmlFileLoaderTest {
 		while ((evt = parser.next()) != XmlResourceParser.END_DOCUMENT) {
 			switch (evt) {
 				case (XmlResourceParser.START_TAG): {
-					index ++;
-					assertThat(parser.getDepth(), equalTo(expected[index]));
+					assertThat(parser.getDepth(), equalTo(expected[++index]));
 					break;
 				}
 			}
-			
 		}
+		assertThat(index, equalTo(expected.length - 1));
 	}
 
 	@Test
 	public void testGetText() throws XmlPullParserException, IOException {
 		forgeAndOpenDocument("<foo/>");
 		assertThat(parser.getText(), equalTo(""));
-		
+
 		forgeAndOpenDocument("<foo>bar</foo>");
 		assertThat(parser.getText(), equalTo("bar"));
 	}
@@ -339,14 +339,14 @@ public class XmlFileLoaderTest {
 		parseUntilNext(XmlResourceParser.START_DOCUMENT);
 		assertThat(parser.getName(), equalTo(""));
 	}
-	
+
 	@Test
 	public void testGetName() throws XmlPullParserException, IOException {
 		forgeAndOpenDocument("<foo/>");
 		assertThat(parser.getName(), equalTo("foo"));
 	}
-	
-	
+
+
 	@Test
 	public void testGetAttribute() throws XmlPullParserException, IOException {
 		forgeAndOpenDocument("<foo xmlns:bar=\"bar\"/>");
@@ -370,7 +370,7 @@ public class XmlFileLoaderTest {
 			throws XmlPullParserException, IOException {
 		assertThat(parser.getAttributeName(0),
 				nullValue());
-		
+
 		forgeAndOpenDocument("<foo bar=\"bar\"/>");
 		assertThat(parser.getAttributeName(0), equalTo("bar"));
 		assertThat(parser.getAttributeName(attributeIndexOutOfIndex()),
@@ -396,13 +396,13 @@ public class XmlFileLoaderTest {
 				"Before START_DOCUMENT should return false.",
 				parser.isEmptyElementTag(),
 				equalTo(false));
-			
+
 		forgeAndOpenDocument("<foo><bar/></foo>");
 		assertThat(
 				"Not empty tag should return false.",
 				parser.isEmptyElementTag(),
 				equalTo(false));
-		
+
 		forgeAndOpenDocument("<foo/>");
 		assertThat(
 				"In the Android implementation this method always return false.",
@@ -418,7 +418,7 @@ public class XmlFileLoaderTest {
 				"of attributes should be -1.",
 				parser.getAttributeCount(),
 				equalTo(-1));
-		
+
 		forgeAndOpenDocument("<foo bar=\"bar\"/>");
 		assertThat(
 				parser.getAttributeCount(),
@@ -432,7 +432,7 @@ public class XmlFileLoaderTest {
 		assertThat(
 				parser.getAttributeValue(0),
 				equalTo("bar"));
-		
+
 		try {
 			parser.getAttributeValue(attributeIndexOutOfIndex());
 		} catch (IndexOutOfBoundsException ex) {
@@ -473,10 +473,10 @@ public class XmlFileLoaderTest {
 					XmlPullParser.START_TAG, // PreferenceScreen
 						XmlPullParser.START_TAG, // PreferenceCategory
 							XmlPullParser.START_TAG, // Preference
-							XmlPullParser.END_TAG, 
+							XmlPullParser.END_TAG,
 						XmlPullParser.END_TAG,
 						XmlPullParser.START_TAG, // CheckBoxPreference
-						XmlPullParser.END_TAG, 
+						XmlPullParser.END_TAG,
 						XmlPullParser.START_TAG, // EditTextPreference
 						XmlPullParser.END_TAG,
 						XmlPullParser.START_TAG, // ListPreference
@@ -494,8 +494,10 @@ public class XmlFileLoaderTest {
 		
 		do {
 			evt = parser.next();
-			assertThat(evt, equalTo(expectedEvents[++index]));
+			++index;
+			assertThat("For index " + index, evt, equalTo(expectedEvents[index]));
 		} while (evt != XmlResourceParser.END_DOCUMENT);
+		assertThat(index, equalTo(expectedEvents.length - 1));
 	}
 
 	@Test
@@ -781,7 +783,7 @@ public class XmlFileLoaderTest {
 	@Test
 	public void testGetIdAttribute() throws XmlPullParserException, IOException {
 		forgeAndOpenDocument("<foo/>");
-		assertThat(parser.getIdAttribute(), equalTo(null));
+		assertThat(parser.getIdAttribute(), equalTo((String)null));
 		
 		forgeAndOpenDocument("<foo id=\"bar\"/>");
 		assertThat(parser.getIdAttribute(), equalTo("bar"));
@@ -790,7 +792,7 @@ public class XmlFileLoaderTest {
 	@Test
 	public void testGetClassAttribute() throws XmlPullParserException, IOException {
 		forgeAndOpenDocument("<foo/>");
-		assertThat(parser.getClassAttribute(), equalTo(null));
+		assertThat(parser.getClassAttribute(), equalTo((String)null));
 		
 		forgeAndOpenDocument("<foo class=\"bar\"/>");
 		assertThat(parser.getClassAttribute(), equalTo("bar"));

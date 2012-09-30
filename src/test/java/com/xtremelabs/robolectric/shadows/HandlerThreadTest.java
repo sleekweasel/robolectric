@@ -27,7 +27,7 @@ public class HandlerThreadTest {
 		}
 	}
 
-    @Test
+    @Test(timeout = 5000)
     public void shouldReturnLooper() throws Exception {
         handlerThread = new HandlerThread("test");
         handlerThread.start();
@@ -35,14 +35,14 @@ public class HandlerThreadTest {
         assertNotSame(handlerThread.getLooper(), Robolectric.application.getMainLooper());
     }
 
-    @Test
-    public void shouldReturnNullIfThreadHasNotBeenStarted() throws Exception {
+	@Test(timeout = 5000)
+	public void shouldReturnNullIfThreadHasNotBeenStarted() throws Exception {
         handlerThread = new HandlerThread("test");
         assertNull(handlerThread.getLooper());
     }
 
-    @Test
-    public void shouldQuitLooperAndThread() throws Exception {
+	@Test(timeout = 5000)
+	public void shouldQuitLooperAndThread() throws Exception {
         handlerThread = new HandlerThread("test");
         handlerThread.start();
         assertTrue(handlerThread.isAlive());
@@ -52,8 +52,8 @@ public class HandlerThreadTest {
         handlerThread = null;
     }
 
-    @Test
-    public void shouldStopThreadIfLooperIsQuit() throws Exception {
+	@Test(timeout = 5000)
+	public void shouldStopThreadIfLooperIsQuit() throws Exception {
         handlerThread = new HandlerThread("test1");
         handlerThread.start();
         Looper looper = handlerThread.getLooper();
@@ -65,8 +65,8 @@ public class HandlerThreadTest {
         handlerThread = null;
     }
 
-    @Test
-    public void shouldCallOnLooperPrepared() throws Exception {
+	@Test(timeout = 5000)
+	public void shouldCallOnLooperPrepared() throws Exception {
         final Boolean[] wasCalled = new Boolean[] { false };
         handlerThread = new HandlerThread("test") {
             @Override

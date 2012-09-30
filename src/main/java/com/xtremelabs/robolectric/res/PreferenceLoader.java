@@ -125,7 +125,8 @@ public class PreferenceLoader extends XmlLoader {
         	}
            	
            	try {
-                TestAttributeSet attributeSet = new TestAttributeSet(attributes);
+                TestAttributeSet attributeSet = new TestAttributeSet(
+                        attributes, resourceExtractor, new AttrResourceLoader(resourceExtractor), null, false);
                 if (strictI18n) {
                 	attributeSet.validateStrictI18n();
                 }
